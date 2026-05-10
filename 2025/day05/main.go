@@ -58,7 +58,7 @@ func part(part int, lines []string) int {
 			})
 
 			// check for prev range overlapping
-			for i := range ranges[1:] {
+			for i := range ranges {
 				tryRangeMerge(i)
 			}
 
