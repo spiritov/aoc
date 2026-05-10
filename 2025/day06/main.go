@@ -92,8 +92,6 @@ func parseProblems(lines []string) ([][]string, []string) {
 	// init problems
 	var problems [][]string
 	problemLines := lines[:len(lines)-1]
-	//operandsCount := len(operandLines)
-	// problemsCount := len(lines[0])
 	for i, currOperatorI := range operatorIndexes {
 		// break on final index
 		if i == len(operatorIndexes)-1 {
