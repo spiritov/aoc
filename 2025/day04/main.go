@@ -1,32 +1,18 @@
 package main
 
 import (
+	"2025/util"
 	_ "embed"
 	"fmt"
 	"slices"
 	"strings"
 )
 
-type pos struct {
-	x, y int
-}
-
-func addPositions(a pos, b pos) pos {
-	return pos{x: a.x + b.x, y: a.y + b.y}
-}
-
-func areEqualPositions(a pos, b pos) bool {
-	return a.x == b.x && a.y == b.y
-}
-
 //go:embed input.txt
 var input string
-var positions []pos
-var deletables []pos
-var directions = []pos{
-	{-1, -1}, {-1, 0}, {-1, 1},
-	{0, -1}, {0, 1},
-	{1, -1}, {1, 0}, {1, 1}}
+var positions []util.Position
+var deletables []util.Position
+var directions = util.GetSurroundingPositions()
 
 func main() {
 	lines := strings.Split(input, "\n")
@@ -49,23 +35,21 @@ func part(part int) int {
 				break
 			}
 
-			for _, deletable := range deletables {
-				positions = slices.DeleteFunc(positions, func(p pos) bool {
-					return areEqualPositions(p, deletable)
-				})
-			}
+			positions = slices.DeleteFunc(positions, func(p util.Position) bool {
+				return slices.Contains(deletables, p)
+			})
 		}
 	}
 
 	return sum
 }
 
-func getPaperPositions(lines []string) []pos {
-	var positions []pos
+func getPaperPositions(lines []string) []util.Position {
+	var positions []util.Position
 	for i, line := range lines {
 		for j, obj := range line {
 			if obj == '@' {
-				positions = append(positions, pos{x: i, y: j})
+				positions = append(positions, util.Position{X: i, Y: j})
 			}
 		}
 	}
@@ -79,7 +63,7 @@ func getSumOfRemovables(part int) int {
 		neighbors := 0
 
 		for _, direction := range directions {
-			if slices.Contains(positions, addPositions(position, direction)) {
+			if slices.Contains(positions, util.AddPositions(position, direction)) {
 				neighbors++
 			}
 		}
